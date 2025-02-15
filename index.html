@@ -135,15 +135,15 @@
 
         function startPing() {
             google_http = setInterval(() => {
-                ping_http("http://www.google.com/generate_204", "ping-google-http");
+                ping_http("https://www.google.com/generate_204", "ping-google-http");
             }, 1000);
 
             gstatic_http = setInterval(() => {
-                ping_http("http://www.gstatic.com/generate_204", "ping-gstatic-http");
+                ping_http("https://www.gstatic.com/generate_204", "ping-gstatic-http");
             }, 1000);
 
             cloudflare_http = setInterval(() => {
-                ping_http("http://cp.cloudflare.com/generate_204", "ping-cloudflare-http");
+                ping_http("https://cp.cloudflare.com/generate_204", "ping-cloudflare-http");
             }, 1000);
         }
 
