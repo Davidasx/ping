@@ -73,16 +73,36 @@
     <h1>Ping Latency Test</h1>
     <div class="ping-container">
         <div class="ping-card">
-            <span class="ping-label">Google (HTTP)</span>
-            <span id="ping-google-http" class="ping-value">N/A</span>
+            <span class="ping-label">Google</span>
+            <span id="ping-google" class="ping-value">N/A</span>
         </div>
         <div class="ping-card">
-            <span class="ping-label">Gstatic (HTTP)</span>
-            <span id="ping-gstatic-http" class="ping-value">N/A</span>
+            <span class="ping-label">Gstatic</span>
+            <span id="ping-gstatic" class="ping-value">N/A</span>
         </div>
         <div class="ping-card">
-            <span class="ping-label">CloudFlare (HTTP)</span>
-            <span id="ping-cloudflare-http" class="ping-value">N/A</span>
+            <span class="ping-label">CloudFlare</span>
+            <span id="ping-cloudflare" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">V2EX</span>
+            <span id="ping-v2ex" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">USTC LUG</span>
+            <span id="ping-ustclug" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">Google CN</span>
+            <span id="ping-google-cn" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">Huawei</span>
+            <span id="ping-huawei" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">Xiaomi</span>
+            <span id="ping-xiaomi" class="ping-value">N/A</span>
         </div>
     </div>
     <script>
@@ -110,7 +130,7 @@
             }
         }
 
-        function ping_http(url, elementId) {
+        function ping(url, elementId) {
             const httpStartTime = Date.now();
             const timeout = new Promise((_, reject) => {
                 setTimeout(() => reject(new Error('Timeout')), 5000);
@@ -134,16 +154,36 @@
         }
 
         function startPing() {
-            google_http = setInterval(() => {
-                ping_http("https://www.google.com/generate_204", "ping-google-http");
+            google = setInterval(() => {
+                ping("https://www.google.com/generate_204", "ping-google");
             }, 1000);
 
-            gstatic_http = setInterval(() => {
-                ping_http("https://www.gstatic.com/generate_204", "ping-gstatic-http");
+            gstatic = setInterval(() => {
+                ping("https://www.gstatic.com/generate_204", "ping-gstatic");
             }, 1000);
 
-            cloudflare_http = setInterval(() => {
-                ping_http("https://cp.cloudflare.com/generate_204", "ping-cloudflare-http");
+            cloudflare = setInterval(() => {
+                ping("https://cp.cloudflare.com/generate_204", "ping-cloudflare");
+            }, 1000);
+
+            v2ex = setInterval(() => {
+                ping("https://v2ex.com/generate_204", "ping-v2ex");
+            }, 1000);
+
+            ustclug = setInterval(() => {
+                ping("http://204.ustclug.org/generate_204", "ping-ustclug");
+            }, 1000);
+
+            google_cn = setInterval(() => {
+                ping("https://google.cn/generate_204", "ping-google-cn");
+            }, 1000);
+
+            huawei = setInterval(() => {
+                ping("http://connectivitycheck.platform.hicloud.com/generate_204", "ping-huawei");
+            }, 1000);
+
+            xiaomi = setInterval(() => {
+                ping("http://connect.rom.miui.com/generate_204", "ping-xiaomi");
             }, 1000);
         }
 
