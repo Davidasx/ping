@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Latency Test</title>
+    <link rel="icon" href="favicon.ico">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .ping-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .ping-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ping-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .ping-value {
+            font-family: monospace;
+            font-size: 1.1em;
+            padding: 0.5em 1em;
+            background: #f8f9fa;
+            border-radius: 4px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .na {
+            color: #6c757d;
+        }
+
+        .good {
+            color: #28a745;
+        }
+
+        .warning {
+            color: #ffc107;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Ping Latency Test</h1>
+    <div class="ping-container">
+        <div class="ping-card">
+            <span class="ping-label">Google (HTTP)</span>
+            <span id="ping-google-http" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">Gstatic (HTTP)</span>
+            <span id="ping-gstatic-http" class="ping-value">N/A</span>
+        </div>
+        <div class="ping-card">
+            <span class="ping-label">CloudFlare (HTTP)</span>
+            <span id="ping-cloudflare-http" class="ping-value">N/A</span>
+        </div>
+    </div>
+    <script>
+        const RECONNECT_DELAY = 3000;
+
+        function updatePingDisplay(elementId, value) {
+            const element = document.getElementById(elementId);
+            element.textContent = value;
+
+            element.classList.remove('error', 'na', 'good', 'warning');
+
+            if (value === 'N/A') {
+                element.classList.add('na');
+            } else if (value === 'Error') {
+                element.classList.add('error');
+            } else {
+                const latency = parseInt(value);
+                if (latency < 150) {
+                    element.classList.add('good');
+                } else if (latency < 400) {
+                    element.classList.add('warning');
+                } else {
+                    element.classList.add('error');
+                }
+            }
+        }
+
+        function ping_http(url, elementId) {
+            const httpStartTime = Date.now();
+            const timeout = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Timeout')), 5000);
+            });
+
+            Promise.race([
+                fetch(url, {
+                    mode: 'no-cors',
+                    cache: 'no-store'
+                }),
+                timeout
+            ])
+                .then(() => {
+                    const httpLatency = Date.now() - httpStartTime;
+                    updatePingDisplay(elementId, httpLatency + " ms");
+                })
+                .catch((error) => {
+                    updatePingDisplay(elementId, "Error");
+                    console.log(`Ping error for ${url}: ${error.message}`);
+                });
+        }
+
+        function startPing() {
+            google_http = setInterval(() => {
+                ping_http("http://www.google.com/generate_204", "ping-google-http");
+            }, 1000);
+
+            gstatic_http = setInterval(() => {
+                ping_http("http://www.gstatic.com/generate_204", "ping-gstatic-http");
+            }, 1000);
+
+            cloudflare_http = setInterval(() => {
+                ping_http("http://cp.cloudflare.com/generate_204", "ping-cloudflare-http");
+            }, 1000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            startPing();
+        });
+    </script>
+</body>
+
+</html>
